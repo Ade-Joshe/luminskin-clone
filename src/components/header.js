@@ -1,19 +1,21 @@
 import React from 'react';
 import { logo, cartIcon } from '../assets';
 
-const Header = () => {
+const Header = ({ cartCount, setSidebarShow }) => {
     return (
-        <header className="flex">
-            <img src={logo} alt="logo" />
-            <p>Shop</p>
-            <p>Learn</p>
+        <>
+            <header className="flex">
+                <img src={logo} alt="logo" />
+                <p>Shop</p>
+                <p>Learn</p>
 
-            <div className="flex">
-                <p>Account</p>
-                <p><img src={cartIcon} alt="Cart icon" /> 4</p>
-            </div>
+                <div className="flex">
+                    <p>Account</p>
+                    <p onClick={() => setSidebarShow(true)}><img src={cartIcon} alt="Cart icon" /> {cartCount}</p>
+                </div>
+            </header>
 
-        </header>
+        </>
     )
 }
 
