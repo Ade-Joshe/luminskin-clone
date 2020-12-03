@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Header, ProductCard, SubSection } from '../components';
+import { Header, ProductCard, SideBar, SubSection } from '../components';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
@@ -10,13 +10,43 @@ const Product = () => {
     const [sidebarShow, setSidebarShow] = useState(false)
 
     const addToCart = (id, title, image_url, price) => {
-        setSidebarShow(!sidebarShow);
+        if (!sidebarShow) setSidebarShow(true);
         let oldCartData = cartData;
-        let newCartProduct = {
-            id, title, image_url, price
+        let newCartProduct;
+
+        if (oldCartData.length > 0) {
+            let existingCartData = oldCartData.find(element => element.id === id);
+            if (existingCartData) {
+                existingCartData.count = existingCartData.count + 1;
+                setCartData([...oldCartData])
+            } else {
+                newCartProduct = {
+                    id, title, image_url, price, count: 1
+                }
+                setCartData([...oldCartData, newCartProduct]);
+            }
         }
-        setCartData([...oldCartData, newCartProduct]);
-        console.log(cartData)
+        else {
+            newCartProduct = {
+                id, title, image_url, price, count: 1
+            }
+            setCartData([...oldCartData, newCartProduct]);
+        }
+    }
+
+    const removeFromCart = (id) => {
+        let currentCartData = cartData;
+
+        let index = currentCartData.findIndex(element => element.id === id);
+
+        if (currentCartData[index].count > 1) {
+            currentCartData[index].count = currentCartData[index].count - 1;
+            setCartData([...currentCartData])
+        }
+        else {
+            currentCartData.splice(index, 1);
+            setCartData([...currentCartData]);
+        }
     }
 
     const closeOverlay = (e) => {
@@ -26,65 +56,52 @@ const Product = () => {
         }
     }
 
+    const reFormatCartData = async (data) => {
+        let tempProductData = await data.products;
+        let tempCartData = cartData;
+
+        tempCartData.forEach((element, index) => {
+            let newElement = tempProductData.find(item => item.id === element.id);
+            tempCartData[index].price = newElement.price;
+        });
+
+        setCartData(tempCartData)
+    }
+
     return (
         <>
             {
                 sidebarShow ?
-                    <div id="overlay" onClick={closeOverlay}>
-                        <div className="contentBox">
-                            <div className="flex">
-                                <span>&gt;</span>
-                                <p>YOUR CART</p>
-                            </div>
-                            <div>
-                                <select
-                                    value={currency}
-                                    onChange={(e) => setCurrency(e.target.value)}
-                                >
-                                    <Query query={gql`
-                                            {
-                                                currency
-                                            }
-                                        `}>
-                                        {
-                                            ({ loading, error, data }) => {
-                                                if (loading) return <option>loading ...</option>
-                                                if (error) return <p> Error :( </p>;
-
-                                                return data.currency.map((item, index) => (
-                                                    <option key={index} value={item}>{item}</option>
-                                                ));
-                                            }
-                                        }
-                                    </Query>
-                                </select>
-                            </div>
-                            {
-                                cartData.length > 0 ?
-                                    <>
-
-                                    </>
-                                    :
-                                    <p id={"noItemCart"}>There are no items in your cart.</p>
-                            }
-                        </div>
-                    </div>
+                    <SideBar
+                        key={Math.random()}
+                        cartData={cartData}
+                        currency={currency}
+                        addToCart={addToCart}
+                        setCurrency={setCurrency}
+                        closeOverlay={closeOverlay}
+                        removeFromCart={removeFromCart}
+                    />
                     :
-                    <>
-
-                    </>
+                    <></>
             }
-            {/* header component */}
-            <Header cartCount={cartData.length} setSidebarShow={setSidebarShow} />
 
+            {/* header component */}
+            <Header
+                cartCount={cartData.length}
+                setSidebarShow={setSidebarShow}
+                key={Math.random()}
+            />
 
             {/* sub section */}
-            <SubSection />
-
+            <SubSection
+                key={Math.random()}
+            />
 
             <div id="productList">
                 <div>
-                    <Query query={gql`
+                    <Query
+                        onCompleted={(data) => reFormatCartData(data)}
+                        query={gql`
                         {
                             products {
                                 id,
@@ -97,17 +114,24 @@ const Product = () => {
                         {
                             ({ loading, error, data }) => {
                                 if (loading) return <p>loading ...</p>
-                                if (error) return <p> Error :( </p>;
+                                if (error) return <p> Please check your network and try again </p>;
 
                                 return data.products.map(({ id, title, image_url, price }) => (
-                                    <ProductCard id={id} title={title} image_url={image_url} price={price} addToCart={addToCart} key={id} currency={currency} />
+                                    <ProductCard
+                                        id={id}
+                                        title={title}
+                                        image_url={image_url}
+                                        price={price}
+                                        addToCart={addToCart}
+                                        key={id}
+                                        currency={currency}
+                                    />
                                 ));
                             }
                         }
                     </Query>
                 </div>
             </div>
-
         </>
     )
 }
