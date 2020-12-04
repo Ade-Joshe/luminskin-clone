@@ -23,7 +23,7 @@ const SideBar = ({ closeOverlay, currency, setCurrency, cartData, addToCart, rem
             <div className="contentBox">
 
                 <div className="flex">
-                    <p><span>&gt;</span></p>
+                    <p onClick={closeOverlay}><span>&gt;</span></p>
                     <p>YOUR CART</p>
                     <p />
                 </div>
