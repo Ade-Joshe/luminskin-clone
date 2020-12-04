@@ -9,8 +9,8 @@ const SideBar = ({ closeOverlay, currency, setCurrency, cartData, addToCart, rem
 
     useEffect(() => {
         setData(cartData);
-        totalAmount(cartData);
-    }, [cartData]);
+        totalAmount(data);
+    }, [cartData, total, data]);
 
     const totalAmount = (array) => {
         setTotal(array.reduce((acc, value) => acc +
@@ -68,7 +68,7 @@ const SideBar = ({ closeOverlay, currency, setCurrency, cartData, addToCart, rem
                 }
             </div>
         </div>
-    ), data)
+    ), [data, addToCart, setCurrency, total, closeOverlay, currency, removeFromCart])
 }
 
 export { SideBar }
