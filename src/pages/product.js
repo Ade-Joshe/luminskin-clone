@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Header, ProductCard, SideBar, SubSection } from '../components';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
@@ -7,7 +7,11 @@ const Product = () => {
 
     const [cartData, setCartData] = useState([]);
     const [currency, setCurrency] = useState("USD");
-    const [sidebarShow, setSidebarShow] = useState(false)
+    const [sidebarShow, setSidebarShow] = useState(false);
+
+    useEffect(() => {
+        document.title = "Products - Lumin";
+    })
 
     const addToCart = (id, title, image_url, price) => {
         if (!sidebarShow) setSidebarShow(true);
@@ -51,7 +55,7 @@ const Product = () => {
 
     const closeOverlay = (e) => {
         e.preventDefault();
-        if (e.target.id === "overlay") {
+        if (e.target.id === "overlay" || e.target.innerHTML === "&gt;") {
             setSidebarShow(!sidebarShow);
         }
     }
