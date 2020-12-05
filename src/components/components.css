@@ -145,17 +145,7 @@ header div>* {
     right: 0;
     bottom: 0;
     z-index: 2;
-    /* animation: launchFirst 0.4s; */
 }
-
-/* @keyframes launchFirst {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-} */
 
 .contentBox {
     width: 590px;
@@ -266,6 +256,8 @@ header div>* {
     color: #4B5548;
     background-color: white;
 }
+
+/* media query */
 
 @media (max-width: 768px) {
     .product {
