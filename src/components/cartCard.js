@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 const CartCard = ({ id, title, count, image_url, currency, price, addToCart, removeFromCart }) => {
 
-    const [number, setNumber] = useState(count);
-
     useEffect(() => {
-        setNumber(count)
     }, [id, count, price])
 
     const increaseCount = () => {
@@ -22,7 +19,7 @@ const CartCard = ({ id, title, count, image_url, currency, price, addToCart, rem
             <div className="flex">
                 <div id="controls">
                     <button onClick={decreaseCount}>-</button>
-                    {number}
+                    {count}
                     <button onClick={increaseCount}>+</button>
                 </div>
 
