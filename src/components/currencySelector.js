@@ -8,11 +8,12 @@ const CurrencySelector = ({ currency, setCurrency }) => {
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
         >
-            <Query query={gql`
-                            {
-                                currency
-                            }
-                        `}>
+            <Query
+                query={gql`
+                    {
+                        currency
+                    }
+                `}>
                 {
                     ({ loading, error, data }) => {
                         if (loading) return <option>loading ...</option>

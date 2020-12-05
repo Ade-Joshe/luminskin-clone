@@ -61,6 +61,8 @@ const Product = () => {
     }
 
     const reFormatCartData = async (data) => {
+        setCartData([]); //trigger a re-render to update the full page
+
         let tempProductData = await data.products;
         let tempCartData = cartData;
 
@@ -74,6 +76,15 @@ const Product = () => {
 
     return (
         <>
+
+            {/* header component */}
+            <Header
+                cartCount={cartData.length}
+                setSidebarShow={setSidebarShow}
+                key={Math.random()}
+            />
+
+            {/* sidebar  */}
             {
                 sidebarShow ?
                     <SideBar
@@ -88,13 +99,6 @@ const Product = () => {
                     :
                     <></>
             }
-
-            {/* header component */}
-            <Header
-                cartCount={cartData.length}
-                setSidebarShow={setSidebarShow}
-                key={Math.random()}
-            />
 
             {/* sub section */}
             <SubSection
